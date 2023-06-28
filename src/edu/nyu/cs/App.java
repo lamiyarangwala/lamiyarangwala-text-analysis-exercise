@@ -2,7 +2,10 @@ package edu.nyu.cs;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.Scanner;
+import java.util.Arrays;
+import java.lang.Math;
 /**
  * A program to analyze the use of verbal tics in any transcribed text.
  * Complete the functions to perform the tasks indicated in the comments.
@@ -29,6 +32,38 @@ public class App {
   public static void main(String[] args) throws Exception {
 
     // complete this function according to the instructions
+    String fileName = getFilepathFromUser();
+    String stuff = getContentsOfFile(fileName);
+
+    String[] ticArray = getTicsFromUser();
+
+
+
+
+    System.out.println("\n...............................Analyzing text.................................\n");
+
+    int num5 = 0;
+    for (int i = 0; i<ticArray.length; i++) {
+      num5 += countOccurrences(ticArray[i].toLowerCase(), stuff);
+    }
+
+
+
+    System.out.println("Total number of tics: " + num5);
+    System.out.println("Density of tics: " + Math.round(calculateTicDensity(ticArray, getContentsOfFile(fileName))*100)/100.0);
+
+
+
+    System.out.println("\n...............................Tic breakdown..................................\n");
+    
+    for (int i = 0; i<ticArray.length; i++){
+      System.out.println(String.format("%-10s", ticArray[i]) + " / "+ String.format("%-20s", countOccurrences(ticArray[i], stuff)+" occurrences") + "/ " + calculatePercentage(countOccurrences(ticArray[i].toLowerCase(), stuff), num5)+"% of all tics");
+     
+
+    }
+
+
+
 
   }
 
@@ -43,6 +78,9 @@ public class App {
   public static String getFilepathFromUser() {
 
     // complete the getFilepathFromUser function according to the instructions above
+    System.out.println("What file would you like to open?");
+    String response = scn.nextLine();
+    return response;
 
   }
 
@@ -87,6 +125,27 @@ public class App {
 
     // write the getTicsFromUser function according to the instructions
 
+  public static String[] getTicsFromUser() {
+    System.out.println("What words would you like to search for?");
+    String ticString = scn.nextLine();
+
+
+
+
+    String[] values = ticString.split(",");
+  
+    String[] values2 = new String[values.length];
+
+    for (int i = 0; i<values.length; i++) {
+      values2[i] = values[i].trim();
+    }
+
+   
+    return values2;
+
+  
+}
+
 
  /**
    * countOccurrences method
@@ -97,6 +156,31 @@ public class App {
    */
 
     // write the countOccurrences function according to the instructions
+   
+
+    public static int countOccurrences(String needle, String haystack){
+    String[] hayArray = haystack.split("[ \n\t.,?!]+");
+
+    
+    int num = 0;
+  
+    
+    for (int i=0; i<hayArray.length; i++) {
+      //System.out.println(hayArray[i]);
+      String temp = hayArray[i].trim();
+    
+      if (temp.equalsIgnoreCase(needle)) {
+        num += 1;
+
+      }
+    }
+    
+    return num;
+
+    }
+
+
+  
 
   /**
    * calculatePercentage method
@@ -105,6 +189,12 @@ public class App {
    * @param num2 The overall number out of which the num1 number is taken.  i.e. the denominator in the ratio of num1 to num2.
    * @return The percentage that rum1 represents out of the total of num2, rounded to the nearest integer.
    */
+    public static int calculatePercentage(int num1, int num2) {
+      return (num1 * 100)/num2;
+
+
+
+    }
 
     // write the calculatePercentage function according to the instructions above
 
@@ -120,6 +210,26 @@ public class App {
    * @param fullText The full text.
    * @return The proportion of the number of tic words present in the text to the total number of words in the text, as a double.
    */
+
+  public static double calculateTicDensity(String[] tics, String full) {
+
+    
+    int num4 = 0;
+    for (int i = 0; i<tics.length; i++) {
+      num4 += countOccurrences(tics[i].toLowerCase(), full);
+
+    }
+
+    // get num words in text
+    String[] textArray = full.split("[ \n\t.,?!-]+");
+    
+    return num4 * 1.0/textArray.length;
+
+
+
+
+  }
+
 
     // write the calculateTicDensity function according to the instructions above
 
